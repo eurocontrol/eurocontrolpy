@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eurocontrolpy"
+version = "0.0.1"
+description = "EUROCONTROL PRISME/NM Oracle client for trajectories and airspace profiles (SO6 generation included)."
+readme = { file = "README.md", content-type = "text/markdown" }
+authors = [
+  { name = "Enrico Spinielli", email = "enrico.spinielli@eurocontrol.int" },
+  { name = "Quinten Goens", email = "quinten.goens@eurocontrol.int" }
+]
+
+license = { text = "MIT" }
+requires-python = ">=3.8"
+
+# Core runtime dependencies actually used by the code you provided
+dependencies = [
+  "pandas>=1.5",
+  "sqlalchemy>=2.0",
+  "oracledb>=1.4"
+]
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Topic :: Database",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12"
+]
+
+keywords = [
+  "aviation",
+  "eurocontrol",
+  "prisme",
+  "oracle",
+  "sqlalchemy",
+  "flights",
+  "trajectories",
+  "airspace-profiles",
+  "so6"
+]
+
+maintainers = [
+  { name = "Quinten Goens", email = "quinten.goens@eurocontrol.int" }
+]
+
+[project.urls]
+# Update these when you publish the repo for this package
+Homepage = "https://github.com/eurocontrol/eurocontrolpy"
+Repository = "https://github.com/eurocontrol/eurocontrolpy.git"
+Issues = "https://github.com/eurocontrol/eurocontrolpy/issues"
+
+[project.optional-dependencies]
+# Optional geodesic distance backend; code gracefully falls back if missing
+geo = ["geopy>=2.3"]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# Include package data if/when you add any (kept empty here)
+[tool.setuptools.package-data]
+"eurocontrolpy" = []
