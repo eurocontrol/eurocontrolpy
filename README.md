@@ -151,10 +151,11 @@ The package handles:
 ```python
 from eurocontrolpy import *
 
+# Initialization
 spark, url, props = build_spark_oracle_session()
-
-# Example: use the class for a windowed query (adjust dates as needed).
 ecs = EUROCONTROLSpark(spark=spark)
+
+# Example 1: use the class for a windowed query (adjust dates as needed).
 flights = ecs.flights_tidy(
     wef = "2024-07-01 00:00:00", 
     til = "2024-07-01 23:59:59", 
@@ -162,20 +163,18 @@ flights = ecs.flights_tidy(
     include_military = False,
     include_head = False)
 
-# Example: export point profiles, then convert to SO6 with Pandas.
+# Example 2: export point profiles.
 traj = ecs.point_profiles_tidy(
     wef = "2024-07-01 00:00:00", 
     til = "2024-07-01 23:59:59", 
     profile="CPF")
 
-# Keep only rows in traj whose FLIGHT_ID exists in flights.ID
+# Example 3: Keep only rows in traj whose FLIGHT_ID exists in flights.ID.
 traj_filtered = traj.join(
     flights.select("ID").dropDuplicates(),
     traj["FLIGHT_ID"] == flights["ID"],
     how="inner"
 ).drop(flights["ID"])
-
-print(traj_filtered.count())
 
 spark.stop()
 ```
