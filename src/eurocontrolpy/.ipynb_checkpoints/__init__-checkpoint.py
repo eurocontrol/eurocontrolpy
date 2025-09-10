@@ -1,3 +1,4 @@
-from .eurocontrolpy import EUROCONTROL
+from .eurocontrolpy import EUROCONTROLSpark
+from .eurocontrolpy import build_spark_oracle_session
 
-__all__ = ['EUROCONTROL']
+__all__ = ['EUROCONTROLSpark', 'build_spark_oracle_session']

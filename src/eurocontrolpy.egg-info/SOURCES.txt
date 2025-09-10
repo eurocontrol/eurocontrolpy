@@ -1,0 +1,12 @@
+LICENSE
+MANIFEST.in
+README.md
+pyproject.toml
+src/eurocontrolpy/__init__.py
+src/eurocontrolpy/eurocontrolpy.py
+src/eurocontrolpy.egg-info/PKG-INFO
+src/eurocontrolpy.egg-info/SOURCES.txt
+src/eurocontrolpy.egg-info/dependency_links.txt
+src/eurocontrolpy.egg-info/requires.txt
+src/eurocontrolpy.egg-info/top_level.txt
+src/eurocontrolpy/data/__init__.py

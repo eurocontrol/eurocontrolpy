@@ -18,77 +18,33 @@ except ImportError:
 
 
 # ============================== Oracle via Spark (JDBC) ============================== #
-def build_spark_oracle_session(
-    executor_memory: str = "5g",
-    driver_memory: str = "2g",
-    executor_cores: str = "1",
-    executor_instances: str = "10",
-    shuffle_partitions: str = "100",
-    default_parallelism: str = "100",
-    max_records_per_batch: str = "10000",
-    jar_path: str = "jars/ojdbc8.jar",
-    oracle_fetch_size: int = 1000
-) -> tuple[SparkSession, str, Dict[str, str]]:
+def build_spark_oracle_session() -> tuple[SparkSession, str, Dict[str, str]]:
     """
     Create (or reuse) a SparkSession configured for Oracle JDBC and return
     the Spark session, JDBC URL, and JDBC properties.
 
-    Parameters
-    ----------
-    executor_memory : str, default "5g"
-        Memory allocated per executor.
-    driver_memory : str, default "2g"
-        Memory allocated for the driver.
-    executor_cores : str, default "1"
-        Number of cores per executor.
-    executor_instances : str, default "10"
-        Number of executor instances.
-    shuffle_partitions : str, default "100"
-        Number of shuffle partitions for Spark SQL operations.
-    default_parallelism : str, default "100"
-        Default parallelism level for Spark.
-    max_records_per_batch : str, default "10000"
-        Maximum number of records per Arrow batch.
-    jar_path : str, default "jars/ojdbc8.jar"
-        Path to the Oracle JDBC driver JAR.
-    oracle_fetch_size : int, default 1000
-        JDBC fetch size for database queries.
+    Environment variables
+    ---------------------
+    ORACLE_HOST, ORACLE_PORT, ORACLE_SERVICE, ORACLE_USER, ORACLE_PASSWORD
+        Connection parameters. All are optional (sensible defaults provided).
+    SPARK_JARS / ORACLE_JAR_PATH
+        If you need to point to a specific Oracle JDBC JAR, set one of these.
+        By default we assume 'jars/ojdbc8.jar' relative to CWD.
 
-    Environment Variables Required
-    ------------------------------
-    PRU_DEV_DBNAME : str
-        Full PRU_DEV Oracle connection string in the form {host}:{port}/{service}.
-    PRU_DEV_USR : str
-        PRU_DEV Oracle database username.
-    PRU_DEV_PWD : str
-        PRU_DEV Oracle database password.
-
-    JARs Required
-    ------------------------------
-    Download ojdbc8.jar jar from https://www.oracle.com/europe/database/technologies/appdev/jdbc-downloads.html and place it in jar_path. 
-    
     Returns
     -------
     tuple[SparkSession, str, dict]
-        The Spark session, JDBC URL, and a dictionary of JDBC connection properties.
+        The session, JDBC URL and a dict of JDBC connection properties.
     """
+    jar_guess = os.getenv("ORACLE_JAR_PATH", "jars/ojdbc8.jar")
+    jars_cfg = os.getenv("SPARK_JARS", jar_guess)
 
     spark = (
         SparkSession.builder.appName("oracle-jdbc")
-        .config("spark.jars", jar_path) \
-        .config("spark.sql.session.timeZone", "UTC") \
-        .config("spark.driver.extraJavaOptions", "-Duser.timezone=UTC -Doracle.jdbc.timezoneAsRegion=false") \
-        .config("spark.executor.extraJavaOptions", "-Duser.timezone=UTC -Doracle.jdbc.timezoneAsRegion=false") \
-        .config("spark.executor.memory", executor_memory) \
-        .config("spark.driver.memory", driver_memory) \
-        .config("spark.executor.cores", executor_cores) \
-        .config("spark.executor.instances", executor_instances) \
-        .config("spark.sql.shuffle.partitions", shuffle_partitions) \
-        .config("spark.default.parallelism", default_parallelism) \
-        .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer") \
-        .config("spark.rpc.message.maxSize", "512") \
-        .config("spark.sql.execution.arrow.enabled", "true") \
-        .config("spark.sql.execution.arrow.maxRecordsPerBatch", max_records_per_batch) \
+        .config("spark.jars", jars_cfg)
+        .config("spark.sql.session.timeZone", "UTC")
+        .config("spark.driver.extraJavaOptions", "-Duser.timezone=UTC -Doracle.jdbc.timezoneAsRegion=false")
+        .config("spark.executor.extraJavaOptions", "-Duser.timezone=UTC -Doracle.jdbc.timezoneAsRegion=false")
         .getOrCreate()
     )
 
@@ -101,7 +57,7 @@ def build_spark_oracle_session(
         "user": user,
         "password": password,
         "driver": "oracle.jdbc.driver.OracleDriver",
-        "fetchSize": oracle_fetch_size,
+        "fetchSize": os.getenv("ORACLE_FETCH_SIZE", "1000"),
     }
     return spark, url, props
 
