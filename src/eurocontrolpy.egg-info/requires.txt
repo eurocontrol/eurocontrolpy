@@ -1,6 +1,0 @@
-pandas>=1.5
-sqlalchemy>=2.0
-oracledb>=1.4
-
-[geo]
-geopy>=2.3
