@@ -149,23 +149,35 @@ The package handles:
 ## Usage
 
 ```python
-from eurocontrolpy import EUROCONTROL
+from eurocontrolpy import *
 
-# Connect to PRU_DEV schema
-db = EUROCONTROL(schema="PRU_DEV")
+spark, url, props = build_spark_oracle_session()
 
-# Get flights for a specific day
-flights = db.flights_tidy("2023-01-01 00:00:00", "2023-01-02 00:00:00")
+# Example: use the class for a windowed query (adjust dates as needed).
+ecs = EUROCONTROLSpark(spark=spark)
+flights = ecs.flights_tidy(
+    wef = "2024-07-01 00:00:00", 
+    til = "2024-07-01 23:59:59", 
+    include_sensitive = False,
+    include_military = False,
+    include_head = False)
 
-# Get FIR airspace profiles
-profiles = db.airspace_profiles_tidy("2023-01-01", "2023-01-02", airspace="FIR", profile="CTFM")
+# Example: export point profiles, then convert to SO6 with Pandas.
+traj = ecs.point_profiles_tidy(
+    wef = "2024-07-01 00:00:00", 
+    til = "2024-07-01 23:59:59", 
+    profile="CPF")
 
-# Export point profiles for a bounding box
-bbox = {"xmin": 7.5, "xmax": 9.6, "ymin": 49.36, "ymax": 50.69}
-points = db.point_profiles_tidy("2023-01-01", "2023-01-02", profile="CTFM", bbox=bbox)
+# Keep only rows in traj whose FLIGHT_ID exists in flights.ID
+traj_filtered = traj.join(
+    flights.select("ID").dropDuplicates(),
+    traj["FLIGHT_ID"] == flights["ID"],
+    how="inner"
+).drop(flights["ID"])
 
-# Convert to SO6 format
-so6 = db.generate_so6(points)
+print(traj_filtered.count())
+
+spark.stop()
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
