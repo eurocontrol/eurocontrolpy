@@ -27,7 +27,7 @@ def build_spark_oracle_session(
     default_parallelism: str = "100",
     max_records_per_batch: str = "10000",
     jar_path: str = "jars/ojdbc8.jar",
-    oracle_fetch_size: int = 1000
+    oracle_fetch_size: int = "1000"
 ) -> tuple[SparkSession, str, Dict[str, str]]:
     """
     Create (or reuse) a SparkSession configured for Oracle JDBC and return
