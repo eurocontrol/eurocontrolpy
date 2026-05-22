@@ -1,240 +1,248 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+<!-- back-to-top anchor -->
 <a id="readme-top"></a>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
 
-
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![MIT License (MIT)][license-shield]][license-url]
+[![MIT License][license-shield]][license-url]
 
-
-
-<!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/eurocontrol/eurocontrolpy">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Eurocontrol_logo_2010.svg" alt="Logo" width="80" height="80">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Eurocontrol_logo_2010.svg"
+         alt="EUROCONTROL logo" width="80" height="80">
   </a>
 
-<h3 align="center">eurocontrolpy</h3>
+  <h3 align="center">eurocontrolpy</h3>
 
   <p align="center">
-A Python client for interacting with EUROCONTROL PRISME / Network Manager (NM) trajectory and airspace profile data stored in Oracle databases.  
-It supports flight and airspace profile retrieval, model trajectory export, and SO6 segment generation. 
+    A Python client for EUROCONTROL PRISME&nbsp;/&nbsp;Network&nbsp;Manager (NM)
+    trajectory and airspace-profile data stored in Oracle.
     <br />
-    <a href="https://github.com/eurocontrol/eurocontrolpy"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/eurocontrol/eurocontrolpy">View Repo</a>
-    &middot;
-    <a href="https://github.com/eurocontrol/eurocontrolpy/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    &middot;
-    <a href="https://github.com/eurocontrol/eurocontrolpy/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://eurocontrol.github.io/eurocontrolpy/"><strong>Read the docs »</strong></a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/eurocontrol/eurocontrolpy/issues/new?labels=bug">Report Bug</a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/eurocontrol/eurocontrolpy/issues/new?labels=enhancement">Request Feature</a>
   </p>
 </div>
 
-
+---
 
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
+    <li><a href="#about-the-project">About The Project</a></li>
+    <li><a href="#built-with">Built With</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#authors">Authors</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
+---
 
-
-<!-- ABOUT THE PROJECT -->
 ## About The Project
 
-`eurocontrolpy` is designed for analysts and developers working with EUROCONTROL PRISME / NM data.  
-It provides an object-oriented interface to query and process:
+`eurocontrolpy` provides an object-oriented Python interface to EUROCONTROL
+PRISME / NM data.  It ships two interchangeable backends that expose the same
+method surface:
 
-- **Flights** (`flights_tidy`)
-- **Airspace profiles** (`airspace_profiles_tidy`)
-- **Point profiles** (`point_profiles_tidy`)
-- **Model trajectories** with optional bounding box/time buffers
-- **SO6-formatted trajectories** ready for downstream analysis
+| Class | Backend | Returns |
+|---|---|---|
+| `EUROCONTROLpy` | SQLAlchemy + python-oracledb | **pandas** DataFrames |
+| `EUROCONTROLSpark` | PySpark + Oracle JDBC | **Spark** DataFrames |
 
-The package handles:
-- Oracle connection setup via environment variables
-- Automatic UTC timezone alignment
-- Data cleaning (null filtering, column renaming)
-- Optional geodesic distance computation
+Key capabilities:
 
-### Built With
-
-* [![Python][Python.org]][Python-url]
-* [![Pandas][Pandas-logo]][Pandas-url]
-* [![SQLAlchemy][SQLAlchemy-logo]][SQLAlchemy-url]
-* [![cx_Oracle][cxOracle-logo]][cxOracle-url]
-* [![GeoPy][GeoPy-logo]][GeoPy-url] *(optional)*
+- **Flights** — `flights_tidy`, `adrr_flights_tidy`
+- **Airspace profiles** — `airspace_profiles_tidy`, `flights_airspace_profiles_tidy`
+- **Point profiles & model trajectories** — `point_profiles_tidy`, `export_model_trajectory`
+- **SO6 segment export** — `generate_so6`
+- **Airspace geometries** — `acc_sf`, `ansp_sf`, `es_sf`, `fir_sf` (GeoDataFrames, SQLAlchemy only)
+- **H3 hexagon polyfill** — `polyfill_h3` (pandas or Spark UDF)
+- **IATA seasons** — `season_iata`, `iata_season_for_date`
+- **OurAirports** — `airports_oa` (no DB required)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- GETTING STARTED -->
+## Built With
+
+**Core**
+
+* [![Python][Python-badge]][Python-url]
+* [![Pandas][Pandas-badge]][Pandas-url]
+* [![SQLAlchemy][SQLAlchemy-badge]][SQLAlchemy-url]
+* [![python-oracledb][oracledb-badge]][oracledb-url]
+
+**Optional**
+
+* [![PySpark][Spark-badge]][Spark-url] — `EUROCONTROLSpark` backend
+* [![GeoPandas][Geopandas-badge]][Geopandas-url] — airspace geometry methods
+* [![H3][H3-badge]][H3-url] — hexagon polyfill
+* [![GeoPy][GeoPy-badge]][GeoPy-url] — accurate geodesic distances
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Getting Started
 
 ### Prerequisites
 
-* Python >= 3.8
-* Access to an Oracle database containing PRISME/NM data
-* Environment variables set for your schema, for example:
-  ```sh
-  export PRU_DEV_USR="your_user"
-  export PRU_DEV_PWD="your_password"
-  export PRU_DEV_DBNAME="hostname:port/servicename"
-  ```
+* Python ≥ 3.8
+* Access to the EUROCONTROL PRISME / NM Oracle database
+* Credentials in environment variables:
+
+```sh
+export PRU_DEV_USR="your_user"
+export PRU_DEV_PWD="your_password"
+export PRU_DEV_DBNAME="hostname:port/servicename"
+```
 
 ### Installation
 
-1. Clone the repository:
+```sh
+pip install eurocontrolpy
+```
 
-    ```sh
-    git clone https://github.com/eurocontrol/eurocontrolpy.git
-    cd eurocontrolpy
-    ```
+Install optional extras as needed:
 
-2. Install in editable/development mode:
+```sh
+# Airspace geometries
+pip install "eurocontrolpy[geo_shapes]"
 
-    ```sh
-    pip install -e .
-    ```
+# H3 polyfill
+pip install "eurocontrolpy[h3]"
 
-3. (Optional) Install `geopy` for more accurate geodesic distance calculations:
+# PySpark backend
+pip install "eurocontrolpy[spark]"
 
-    ```sh
-    pip install geopy
-    ```
+# Everything at once
+pip install "eurocontrolpy[geo,geo_shapes,h3,spark]"
+```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+**From source:**
 
-<!-- USAGE EXAMPLES -->
-## Usage
-
-```python
-from eurocontrolpy import *
-
-# Initialization
-spark, url, props = build_spark_oracle_session()
-ecs = EUROCONTROLSpark(spark=spark)
-
-# Example 1: use the class for a windowed query (adjust dates as needed).
-flights = ecs.flights_tidy(
-    wef = "2024-07-01 00:00:00", 
-    til = "2024-07-01 23:59:59", 
-    include_sensitive = False,
-    include_military = False,
-    include_head = False)
-
-# Example 2: export point profiles.
-traj = ecs.point_profiles_tidy(
-    wef = "2024-07-01 00:00:00", 
-    til = "2024-07-01 23:59:59", 
-    profile="CPF")
-
-# Example 3: Keep only rows in traj whose FLIGHT_ID exists in flights.ID.
-traj_filtered = traj.join(
-    flights.select("ID").dropDuplicates(),
-    traj["FLIGHT_ID"] == flights["ID"],
-    how="inner"
-).drop(flights["ID"])
-
-spark.stop()
+```sh
+git clone https://github.com/eurocontrol/eurocontrolpy.git
+cd eurocontrolpy
+pip install -e ".[dev]"
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- ROADMAP -->
-## Roadmap
+## Usage
 
-- [x] Oracle DB connection with automatic UTC session setup
-- [x] Flights, airspace, and point profile queries
-- [x] SO6 export
-- [ ] Async query execution
-- [ ] Integration with geopandas for spatial filtering
+### pandas backend (recommended for notebooks)
 
-See the [open issues](https://github.com/eurocontrol/eurocontrolpy/issues) for the full list of proposed features and known issues.
+```python
+from eurocontrolpy import EUROCONTROLpy
+
+ec = EUROCONTROLpy()   # reads PRU_DEV_* environment variables
+
+# Flight list for one day
+flights = ec.flights_tidy("2024-07-01", "2024-07-02")
+
+# Point profiles
+traj = ec.point_profiles_tidy("2024-07-01", "2024-07-02", profile="CTFM")
+
+# SO6 segment export
+so6 = ec.generate_so6(traj)
+
+# FIR geometries + H3 polyfill at resolution 4
+firs   = ec.fir_sf(cfmu_airac=517)
+h3_df  = ec.polyfill_h3(firs, resolution=4)
+```
+
+### PySpark backend (large-scale pipelines)
+
+```python
+from eurocontrolpy import EUROCONTROLSpark, build_spark_oracle_session
+
+spark, url, props = build_spark_oracle_session(jar_path="jars/ojdbc8.jar")
+ec = EUROCONTROLSpark(spark=spark, url=url, props=props)
+
+# All methods are identical — return type is Spark DataFrame instead of pandas
+flights = ec.flights_tidy("2024-07-01", "2024-07-02")
+flights.show(5)
+
+# H3 polyfill runs as a distributed UDF on Spark workers
+from eurocontrolpy import EUROCONTROLpy
+ec_py = EUROCONTROLpy()
+firs  = ec_py.fir_sf(517)                       # geometry fetched via pandas
+spark_h3 = ec.polyfill_h3(firs, resolution=4)   # polyfill on Spark
+spark_h3.show(5)
+
+spark.stop()
+```
+
+Full API reference and more examples: **[eurocontrol.github.io/eurocontrolpy](https://eurocontrol.github.io/eurocontrolpy/)**
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- CONTRIBUTING -->
+## Roadmap
+
+- [x] Oracle connection via environment variables
+- [x] Flights, airspace profiles and point profile queries
+- [x] SO6 segment export
+- [x] SQLAlchemy / pandas backend (`EUROCONTROLpy`)
+- [x] ADRR flight list format
+- [x] Airspace geometries with geopandas (`acc_sf`, `ansp_sf`, `es_sf`, `fir_sf`)
+- [x] H3 hexagon polyfill (`polyfill_h3`) — pandas and Spark UDF variants
+- [x] IATA season helpers
+- [x] Sphinx documentation with GitHub Actions auto-deploy
+- [ ] Async query execution
+
+See the [open issues](https://github.com/eurocontrol/eurocontrolpy/issues) for proposed features and known issues.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Contributing
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".  
-Don't forget to give the project a star! Thanks again!
+Contributions are welcome.  Please fork the repository and open a pull request.
 
-1. Fork the Project  
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)  
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)  
-4. Push to the Branch (`git push origin feature/AmazingFeature`)  
+1. Fork the project
+2. Create a feature branch (`git checkout -b feature/my-feature`)
+3. Commit your changes (`git commit -m 'Add my feature'`)
+4. Push the branch (`git push origin feature/my-feature`)
 5. Open a Pull Request
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- LICENSE -->
 ## License
 
-Distributed under the MIT License (MIT). See `LICENSE.txt` for more information.
+Distributed under the MIT License.  See `LICENSE.txt` for details.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- CONTACT -->
-## Contact
+## Authors
 
-Quinten GOENS, Aviation Intelligence Unit at [EUROCONTROL](https://www.eurocontrol.int)  
-* Email: [quinten.goens@eurocontrol.int](mailto:quinten.goens@eurocontrol.int)
+**Enrico Spinielli** — original concept, R package architecture, data model  
+Aviation Intelligence Unit · [EUROCONTROL](https://www.eurocontrol.int)  
+✉ [enrico.spinielli@eurocontrol.int](mailto:enrico.spinielli@eurocontrol.int)
 
-Project Link: [https://github.com/eurocontrol/eurocontrolpy](https://github.com/eurocontrol/eurocontrolpy)
+**Quinten Goens** — Python port, SQLAlchemy backend, H3 polyfill, documentation  
+Aviation Intelligence Unit · [EUROCONTROL](https://www.eurocontrol.int)  
+✉ [quinten.goens@eurocontrol.int](mailto:quinten.goens@eurocontrol.int)
+
+Project: [github.com/eurocontrol/eurocontrolpy](https://github.com/eurocontrol/eurocontrolpy)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [Performance Review Commission (PRC)](https://www.eurocontrol.int/air-navigation-services-performance-review)
+* [Performance Review Unit (PRU)](https://www.eurocontrol.int/air-navigation-services-performance-review)
 * [EUROCONTROL](https://www.eurocontrol.int)
+* The [eurocontrol R package](https://github.com/eurocontrol/eurocontrol) from which this library was ported
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/eurocontrol/eurocontrolpy.svg?style=for-the-badge
 [contributors-url]: https://github.com/eurocontrol/eurocontrolpy/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/eurocontrol/eurocontrolpy.svg?style=for-the-badge
@@ -246,13 +254,19 @@ Project Link: [https://github.com/eurocontrol/eurocontrolpy](https://github.com/
 [license-shield]: https://img.shields.io/github/license/eurocontrol/eurocontrolpy.svg?style=for-the-badge
 [license-url]: https://github.com/eurocontrol/eurocontrolpy/blob/master/LICENSE.txt
 
-[Python.org]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
+[Python-badge]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
 [Python-url]: https://www.python.org/
-[Pandas-logo]: https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white
+[Pandas-badge]: https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white
 [Pandas-url]: https://pandas.pydata.org/
-[SQLAlchemy-logo]: https://img.shields.io/badge/SQLAlchemy-444444?style=for-the-badge&logo=python&logoColor=white
+[SQLAlchemy-badge]: https://img.shields.io/badge/SQLAlchemy-444444?style=for-the-badge&logo=python&logoColor=white
 [SQLAlchemy-url]: https://www.sqlalchemy.org/
-[cxOracle-logo]: https://img.shields.io/badge/cx__Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white
-[cxOracle-url]: https://oracle.github.io/python-cx_Oracle/
-[GeoPy-logo]: https://img.shields.io/badge/GeoPy-006699?style=for-the-badge&logo=earth&logoColor=white
+[oracledb-badge]: https://img.shields.io/badge/python--oracledb-F80000?style=for-the-badge&logo=oracle&logoColor=white
+[oracledb-url]: https://python-oracledb.readthedocs.io/
+[Spark-badge]: https://img.shields.io/badge/PySpark-E25A1C?style=for-the-badge&logo=apachespark&logoColor=white
+[Spark-url]: https://spark.apache.org/docs/latest/api/python/
+[Geopandas-badge]: https://img.shields.io/badge/GeoPandas-139C5A?style=for-the-badge&logo=python&logoColor=white
+[Geopandas-url]: https://geopandas.org/
+[H3-badge]: https://img.shields.io/badge/H3-1D6FA5?style=for-the-badge&logo=uber&logoColor=white
+[H3-url]: https://h3geo.org/
+[GeoPy-badge]: https://img.shields.io/badge/GeoPy-006699?style=for-the-badge&logo=python&logoColor=white
 [GeoPy-url]: https://geopy.readthedocs.io/

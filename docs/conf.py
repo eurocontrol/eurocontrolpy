@@ -10,8 +10,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 # ── Project information ───────────────────────────────────────────────────────
 
 project = "eurocontrolpy"
-copyright = "2024, Enrico Spinielli, Quinten Goens"
-author = "Enrico Spinielli, Quinten Goens"
+copyright = "2024–2026, Enrico Spinielli & Quinten Goens"
+author = "Enrico Spinielli & Quinten Goens"
 release = "0.0.1"
 
 # ── Extensions ────────────────────────────────────────────────────────────────

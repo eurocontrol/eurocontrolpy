@@ -19,6 +19,14 @@ Both classes share the same SQL-building logic via the abstract base class
 :class:`~eurocontrolpy._base._EUROCONTROLBase`, so query results are always
 structurally identical regardless of the backend you choose.
 
+.. note::
+
+   eurocontrolpy is a Python port of the
+   `eurocontrol R package <https://github.com/eurocontrol/eurocontrol>`_
+   originally designed by **Enrico Spinielli**.
+   The Python package was developed by **Quinten Goens** with Enrico as co-author.
+   See :doc:`authors` for details.
+
 .. code-block:: python
 
    from eurocontrolpy import EUROCONTROLpy
@@ -46,4 +54,5 @@ structurally identical regardless of the backend you choose.
    :maxdepth: 1
    :caption: Project
 
+   authors
    changelog

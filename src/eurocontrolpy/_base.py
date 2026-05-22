@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import io
 from abc import ABC, abstractmethod
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from math import asin, cos, radians, sin, sqrt
 from typing import Any, Dict, Iterable, Optional, Union
 
@@ -898,7 +898,6 @@ class _EUROCONTROLBase(ABC):
             {"icao": "ENXW", "iata": "", "longitude":  2.48667, "latitude": 59.16500, "elevation": 400.0, "type": "heliport", "name": "Grane",          "iso_country": "NO", "iso_region": "", "continent": "EU"},
         ])
 
-        from datetime import date
         df = pd.concat([df, extra], ignore_index=True)
         df["last_updated"] = date.today()
         return df
