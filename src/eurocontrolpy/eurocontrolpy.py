@@ -45,16 +45,14 @@ def build_spark_oracle_session(
     tuple[SparkSession, str, dict]
         The Spark session, JDBC URL, and JDBC connection properties.
 
-    Environment Variables
-    ---------------------
-    PRU_DEV_DBNAME : full Oracle connection string ``{host}:{port}/{service}``.
-    PRU_DEV_USR    : Oracle username.
-    PRU_DEV_PWD    : Oracle password.
-
     Notes
     -----
-    Download ``ojdbc8.jar`` from the Oracle JDBC downloads page and place it at
-    ``jar_path``.
+    Requires the environment variables ``PRU_DEV_USR`` (username),
+    ``PRU_DEV_PWD`` (password), and ``PRU_DEV_DBNAME``
+    (``host:port/service``).
+
+    Download ``ojdbc8.jar`` from the Oracle JDBC downloads page and place it
+    at *jar_path*.
     """
     from pyspark.sql import SparkSession
 
@@ -415,13 +413,9 @@ class EUROCONTROLpy(_EUROCONTROLBase):
     SQLAlchemy / pandas client for EUROCONTROL PRISME/NM Oracle data.
 
     All methods return pandas DataFrames unless noted otherwise.
-
-    In addition to the methods inherited from _EUROCONTROLBase, this class
-    provides:
-      - acc_sf(cfmu_airac)   – ACC/OAC airspace geometries (geopandas GeoDataFrame)
-      - ansp_sf(cfmu_airac)  – ANSP airspace geometries
-      - es_sf(cfmu_airac)    – Elementary Sector geometries
-      - fir_sf(cfmu_airac)   – FIR geometries
+    In addition to the methods inherited from ``_EUROCONTROLBase``, this class
+    provides ``acc_sf``, ``ansp_sf``, ``es_sf``, and ``fir_sf`` for airspace
+    geometries (returned as geopandas GeoDataFrames).
 
     Parameters
     ----------
@@ -430,10 +424,8 @@ class EUROCONTROLpy(_EUROCONTROLBase):
         ``build_sqlalchemy_oracle_engine(schema)``.
     schema : str, default 'PRU_DEV'
         Environment variable prefix used when auto-creating the engine.
-
-    Environment Variables (when engine is omitted)
-    -----------------------------------------------
-    ``{schema}_USR``, ``{schema}_PWD``, ``{schema}_DBNAME``
+        Reads ``{schema}_USR``, ``{schema}_PWD``, ``{schema}_DBNAME``
+        from the environment.
     """
 
     def __init__(self, engine=None, schema: str = "PRU_DEV") -> None:
