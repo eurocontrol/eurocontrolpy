@@ -19,7 +19,8 @@ requires-python = ">=3.8"
 dependencies = [
   "pandas>=1.5",
   "sqlalchemy>=2.0",
-  "oracledb>=1.4"
+  "oracledb>=1.4",
+  "requests>=2.28"
 ]
 
 classifiers = [
@@ -59,8 +60,28 @@ Repository = "https://github.com/eurocontrol/eurocontrolpy.git"
 Issues = "https://github.com/eurocontrol/eurocontrolpy/issues"
 
 [project.optional-dependencies]
-# Optional geodesic distance backend; code gracefully falls back if missing
+# Geodesic distance backend; code gracefully falls back to Haversine if missing
 geo = ["geopy>=2.3"]
+# Required for airspace geometry methods (acc_sf, ansp_sf, es_sf, fir_sf)
+geo_shapes = ["geopandas>=0.13"]
+# Required for polyfill_h3(); h3-py v3 and v4 are both supported
+h3 = ["h3>=3.7"]
+# PySpark backend
+spark = ["pyspark>=3.3"]
+# Documentation build
+docs = [
+  "sphinx>=7.2",
+  "furo>=2024.1",
+  "sphinx-copybutton>=0.5",
+  "myst-parser>=3.0",
+  # sphinx-autodoc-typehints is intentionally excluded: autodoc_typehints =
+  # "description" (Sphinx 7 built-in) handles the same job without conflicts.
+]
+# Development tools (linting + formatting)
+dev = [
+  "ruff>=0.4",
+  "eurocontrolpy[docs]",
+]
 
 [tool.setuptools]
 package-dir = { "" = "src" }
@@ -68,6 +89,33 @@ package-dir = { "" = "src" }
 [tool.setuptools.packages.find]
 where = ["src"]
 
-# Include package data if/when you add any (kept empty here)
 [tool.setuptools.package-data]
-"eurocontrolpy" = []
+"eurocontrolpy" = ["data/*.csv"]
+
+# ── Ruff (linter + formatter) ─────────────────────────────────────────────────
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+
+[tool.ruff.lint]
+select = [
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes
+  "I",   # isort
+  "N",   # pep8-naming
+  "B",   # flake8-bugbear
+  "UP",  # pyupgrade
+  "Q",   # flake8-quotes
+]
+ignore = [
+  "E501",  # line-too-long — SQL strings are intentionally long
+  "N802",  # function-name lowercase — SQL column names are UPPER_CASE
+  "N803",  # argument-name lowercase — same
+  "UP007", # use X | Y for unions — keep Union[] for explicit py3.8 compat
+]
+
+[tool.ruff.lint.per-file-ignores]
+"src/eurocontrolpy/_base.py"       = ["E501"]
+"src/eurocontrolpy/eurocontrolpy.py" = ["E501"]
