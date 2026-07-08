@@ -34,6 +34,7 @@ def build_spark_oracle_session(
     shuffle_partitions: str = "100",
     default_parallelism: str = "100",
     max_records_per_batch: str = "10000",
+    max_result_size: str = "6G",
     jar_path: str = "jars/ojdbc8.jar",
     oracle_fetch_size: int = 1000,
 ):
@@ -70,6 +71,7 @@ def build_spark_oracle_session(
         .config("spark.default.parallelism",        default_parallelism)
         .config("spark.serializer",                 "org.apache.spark.serializer.KryoSerializer")
         .config("spark.rpc.message.maxSize",        "512")
+        .config("spark.driver.maxResultSize"        max_result_size)
         .config("spark.sql.execution.arrow.enabled",           "true")
         .config("spark.sql.execution.arrow.maxRecordsPerBatch", max_records_per_batch)
         .getOrCreate()
